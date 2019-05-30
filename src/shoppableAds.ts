@@ -115,7 +115,8 @@ class ShoppableAds {
     }
 
     onYouTubeIframeAPIReady = () => {
-        this.player = new( < any > window).YT.Player('existing-iframe-example', {
+        const iframe = document.querySelector(this.selector + ' iframe');
+        this.player = new( < any > window).YT.Player(iframe.id, {
             events: {
                 'onReady': this.onPlayerReady,
                 'onStateChange': this.onPlayerStateChange
@@ -124,7 +125,7 @@ class ShoppableAds {
     }
 
     onPlayerReady = () => {
-        document.getElementById('existing-iframe-example').style.borderColor = '#FF6D00';
+        console.log('YouTube player is ready');
     }
 
     onPlayerStateChange = (event: any) => {
