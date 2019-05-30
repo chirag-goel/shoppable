@@ -1,4 +1,4 @@
-./node_modules/
-./dist/
-!./dist/index.js
-./.ept2_cache/
+node_modules/
+dist/*.ts
+.rpt2_cache/
+
