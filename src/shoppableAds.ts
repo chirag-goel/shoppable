@@ -4,8 +4,7 @@ import AdsIcon from './adsIcon';
 type ShoppableAdsConfigType = {
     type: {
         mediaType: string,
-        playerType?: string,
-        cbConfig?: {},
+        category?: string,
     };
     data: Array<{
         id: string;
@@ -24,8 +23,7 @@ type ShoppableAdsConfigType = {
 class ShoppableAds {
     type: {
         mediaType: string,
-        playerType?: string,
-        cbConfig?: {},
+        category?: string,
     };
     data: Array<{
         id: string;
@@ -46,8 +44,7 @@ class ShoppableAds {
     constructor(config: ShoppableAdsConfigType) {
         this.type = {
             mediaType: config.type.mediaType,
-            playerType: config.type.playerType,
-            cbConfig: config.type.cbConfig
+            category: config.type.category,
         };
         this.player = null;
         this.selector = config.selector;
@@ -65,21 +62,21 @@ class ShoppableAds {
         const adsWrapper = document.querySelector(this.selector);
         adsWrapper.setAttribute('style', 'position: relative;');
         switch (this.type.mediaType) {
-            case 'VIDEO':
-                this.showAdsOnVideo();
+            case 'YOUTUBE_VIDEO':
+                if( this.type.category === 'SHOPPABLE' || this.type.category === 'ADD_TO_CART') {
+                    this.showAdsOnYouTubeVideo();
+                }
                 break;
             case 'IMAGE':
-                this.showAdsOnImage();
+                if( this.type.category === 'SHOPPABLE' || this.type.category === 'ADD_TO_CART') {
+                    this.showAdsOnImage();
+                }
                 break;
         }
     }
 
-    showAdsOnVideo = () => {
-        switch (this.type.playerType) {
-            case 'YOUTUBE':
-                ( < any > window).onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
-                break;
-        }
+    showAdsOnYouTubeVideo = () => {
+        ( < any > window).onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
     }
 
     showAdsOnImage = () => {
