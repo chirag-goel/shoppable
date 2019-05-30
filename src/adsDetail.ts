@@ -9,6 +9,15 @@ class AdsDetail {
         this.selector = config.selector;
     }
 
+    getDetailHtml = (details) => {
+        return "<div style='text-align: center; padding: 10px;'>"
+            + "<div style='width: 100%; height: 180px; overflow: hidden;'>"
+            +   "<img width='130px' src=' "+ details.img + "' /></div><p>" + details.title + "</p>"
+            +   "<a style='width: 100%;height: 30px;background: #00adff;text-decoration: none;"
+            +       "line-height: 30px;color: white;font-weight: bold;border-radius: 5px; display: block;'"
+            +       " href='" + details.url + "' target='_blank'>Buy</a></div>";
+    }
+
     showDetails = (id: string, x: number, y: number, content: string) => {
         this.removeAllAdsDetail();
         var adsPlayer = < HTMLElement > document.querySelector(this.selector);
@@ -20,7 +29,7 @@ class AdsDetail {
         adsClose.setAttribute('style', 'width: 10px;height: 10px;right: 5px;top: 5px;line-height: 10px;text-align: center;color: #000;border: 1px solid #000;position: absolute;font-size: 12px;font-weight: bold;padding: 3px;cursor: pointer;')
         adsDetail.className = 'ads-detail';
         adsDetail.id = id + '-ads-detail';
-        adsContent.innerHTML = content;
+        adsContent.innerHTML = this.getDetailHtml(content);
         adsDetail.setAttribute('style', 'left: ' + x + 'px; top: ' + y + 'px;' +
             'position: absolute;width: 200px;height: 300px;background: rgba(255, 255, 255, 0.8);padding: 5px;border-radius: 2px;overflow: hidden;');
         adsDetail.addEventListener('click', (e) => {
