@@ -5,16 +5,15 @@ type ShoppableAdsConfigType = {
     type: {
         mediaType: string,
         category?: string,
+        cbConfig?: any,
     };
     data: Array<{
-        id: string;
-        content: string;
+        product_id: string;
+        product_details: any;
         timestamp: number;
         productId: string;
-        positionPx: {
-            top: number;
-            left: number;
-        }
+        topPx: number;
+        leftPx: number;
     }>;
     selector?: string;
     enablePause?: boolean;
@@ -24,10 +23,11 @@ class ShoppableAds {
     type: {
         mediaType: string,
         category?: string,
+        cbConfig?: any,
     };
     data: Array<{
         id: string;
-        content: string;
+        content: any;
         timestamp: number;
         productId: string;
         positionPx: {
@@ -42,16 +42,34 @@ class ShoppableAds {
     AdsIconIns?: any;
 
     constructor(config: ShoppableAdsConfigType) {
+        console.log(config);
+
         this.type = {
             mediaType: config.type.mediaType,
             category: config.type.category,
+            cbConfig: config.type.cbConfig,
         };
         this.player = null;
         this.selector = config.selector;
         this.interval = null;
         this.enablePause = config.enablePause;
         this.AdsIconIns = new AdsIcon({ selector: this.selector});
-        this.data = config.data;
+        this.data = [];
+        if (config.data && config.data.length) {
+            for (var idx = 0; idx < config.data.length; idx++) {
+                const { product_id, product_details, timestamp, topPx, leftPx } = config.data[idx];
+                this.data.push({
+                    id: 'ID-' + product_id,
+                    content: product_details,
+                    timestamp,
+                    productId: 'ID-' + product_id,
+                    positionPx: {
+                        top: topPx,
+                        left: leftPx
+                    }
+                });
+            }
+        }
     }
 
     setAdsData = (data) => {
@@ -59,6 +77,7 @@ class ShoppableAds {
     }
 
     onReady = () => {
+        console.log('A' + this);
         const adsWrapper = document.querySelector(this.selector);
         adsWrapper.setAttribute('style', 'position: relative;');
         switch (this.type.mediaType) {
@@ -72,7 +91,17 @@ class ShoppableAds {
                     this.showAdsOnImage();
                 }
                 break;
+            case 'NATIVE_VIDEO':
+                if( this.type.category === 'SHOPPABLE' || this.type.category === 'ADD_TO_CART') {
+                    this.showAdsOnNativeVideo();
+                }
+                break;
         }
+    }
+
+    showAdsOnNativeVideo = () => {
+        this.player = this.type.cbConfig;
+        console.log(this.player);
     }
 
     showAdsOnYouTubeVideo = () => {
@@ -98,11 +127,13 @@ class ShoppableAds {
 
     setTimeLookup = () => {
         var context = this;
+        console.log('INTERVAL');
         this.interval = setInterval(function () {
             var currentTime = Math.floor(context.player.getCurrentTime());
             for (var adsIndex = 0; adsIndex < context.data.length; adsIndex++) {
                 var currentAd = context.data[adsIndex];
                 if (currentTime === currentAd.timestamp) {
+                    console.log('show');
                     if (context.enablePause) {
                         context.player.pauseVideo();
                     }
@@ -113,6 +144,7 @@ class ShoppableAds {
                         currentAd.content
                     );
                 } else {
+                    console.log('remove');
                     context.AdsIconIns.removeIcon(currentAd.id);
                 }
             }
@@ -121,7 +153,7 @@ class ShoppableAds {
 
     onYouTubeIframeAPIReady = () => {
         const iframe = document.querySelector(this.selector + ' iframe');
-        this.player = new( < any > window).YT.Player(iframe.id, {
+        this.player = new (< any > window).YT.Player(iframe.id, {
             events: {
                 'onReady': this.onPlayerReady,
                 'onStateChange': this.onPlayerStateChange
@@ -134,6 +166,7 @@ class ShoppableAds {
     }
 
     onPlayerStateChange = (event: any) => {
+        console.log(event);
         if (event.data === 1) {
             this.setTimeLookup();
         } else if (event.data === 2) {

@@ -39,7 +39,9 @@ class AdsIcon {
         adsIcon.className = 'ads-icon';
         adsIcon.id = id;
         adsIcon.innerHTML = '+';
-        adsIcon.setAttribute('style', 'position: absolute;border: 4px solid rgba(255, 255, 255, 0.5);border-radius: 20px;width: 20px;height: 20px;color: white;font-size: 20px;font-weight: bold;text-align: center;line-height: 20px;cursor: pointer;' + 'left: ' + x + 'px; top: ' + y + 'px')
+        adsIcon.setAttribute('style', 'position: absolute;border: 4px solid rgba(255, 255, 255, 0.5);border-radius: 20px;'
+            +   'width: 30px;height: 30px;color: white;font-size: 20px;font-weight: bold;text-align: center;line-height: 20px;'
+            +   'cursor: pointer;' + 'left: ' + x + 'px; top: ' + y + 'px;animation: shadow-ads-pulse 1s infinite;')
         adsIcon.addEventListener('click', (e) => {
             this.AdsDetailPopUp.showDetails(id, this.getXPosition(x, context.selector) , this.getYPosition(y), content);
         });
